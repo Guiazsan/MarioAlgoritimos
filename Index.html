@@ -1,0 +1,234 @@
+<html>
+		<title>1ª Fase</title>
+		<meta charset="UTF-8"/>
+		<script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+		<script src="JS/jquery.js"></script>
+		<style>
+		body {
+			margin:0px;
+			border:0px;
+			
+		}
+		.ground {
+			background:url(BG/ground.png) repeat;
+			width:100%;
+			height:59px;
+			background-size: 66px 59px;
+			float:left;
+		}
+		.menubar {
+			background-color:#73b6a5;
+			width:100%;
+			height:50px;
+			box-shadow:0px 5px 10px grey;
+			float:left;
+		}
+		.repeatbox {
+			position:relative;
+			padding:30px;	
+			width:200px;
+			height:200px;
+			background-color: #ffffff;
+			box-shadow:0px 5px 20px black;
+			opacity: 0.7;
+			border-radius: 10px;
+			left:790px;
+			bottom:293px;
+		}
+		.repeatbox:before {
+			content:"";
+			position: absolute;
+			left: 100%;
+			top: 90px;
+			width: 0;
+			height: 0;
+			border-top: 30px solid transparent;
+			border-left: 40px solid #ffffff;
+			border-bottom: 30px solid transparent;
+		}
+		.sidebar {
+			width:60px;
+			height:441px;
+			background-color: #ffffff;
+			box-shadow:0px 5px 20px black;
+			opacity: 0.6;			
+		}
+		.bar {
+			background-color: #d6d5d6;
+			width:100%;
+			height:20px;
+			float:left;
+		}
+		.bg {
+			background:url(BG/bg.png) repeat;
+			width:100%;
+			height:511px;
+			float:left;
+		}
+		button {
+			margin: 5px;
+			width:50px;
+			height:50px;
+			border-radius: 10px;		
+		}
+		.quad {
+			position:relative;
+			background:url(GUI/quad.png) repeat;
+			background-size: 248px 253px;
+			height:444px;
+			width: 84.1%;			
+			padding-right:60px;
+			opacity: 0.6;
+			left:60px;
+			top:50px;
+			transition-duration: 0.6s;
+		}
+		.field {
+			background-color: white;
+			border:none; 
+			border-radius: 10px; 
+			margin:2px; 			
+			height: 45px;
+			padding-left: 20px;
+			font-size: 40px;	
+			letter-spacing: 20px;			
+		}
+		.clap {
+			background:url(GUI/clap.png);
+			width: 230px;
+			height: 245px;
+			transform: scale(0.5);
+			transition-duration:0.6s;
+		}
+		.clap:hover {
+			transform: scale(0.6);
+		}
+		@keyframes playclap {
+		   100% { background-position: -1368px; }
+		}
+		.clapanim {
+			background:url(GUI/clap.png);
+			width: 230px;
+			height: 245px;
+			animation: playclap 0.3s steps(6);
+			transform: scale(0.6);
+			transition-duration:0.6s;
+		}
+		.mario {
+			position: relative;
+			background:url(Sprites/Mario.png);
+			width: 17px;
+			height: 26px;	
+			transform: scale(2.3);			
+		}		
+		@keyframes runM {
+			100% { background-position: -35px; }
+		}
+		.runmario {
+			position: relative;
+			background:url(Sprites/Mario.png);
+			width: 17px;
+			height: 26px;	
+			transform: scale(2.3);
+			animation: runM 0.3s steps(2) infinite;
+		}
+
+		</style>
+	</head>
+	<body>		
+		<div class="bg">			
+			<div class="menubar">
+				<center><input disabled id="campo" class="field" style="width: 600px;" type="text"></input></center>
+				<img id="start" style="position:relative; transform: scale(1.5); top:200px; left:45%;" src="GUI/start.png"></img>
+			</div>
+			<div class="sidebar" style="float:left;"></div>
+			<div class="sidebar" style="float:right;">
+				<div style="margin-top:70px;">
+				<button id="run" style="background-color:#00e349;"><i class="fas fa-arrow-right"></i></button>
+				<button id="jump" style="background-color:blue;"><i class="fas fa-arrow-up"></i></button></div>
+				<button id="repeat" style="background-color:orange;"><i class="fas fa-undo"></i></button>
+				
+			</div>
+			<div class="ground">
+				<img style="position:relative; transform: scale(1.7); left:900px; top:-199px;" src="BG/end.png"></img>
+				<div id="mario" class="mario" style="left:160px; top:-190px;"></div>				
+			</div>
+			<div class="bar">
+				<div id="play" class="clap" style="position:relative; top:-180px; left:-40px"></div>
+			</div>			
+		</div>
+		<div class="quad"></div>
+		<div id="black" style="position:absolute; top:0px; background-color:black; opacity:0.6; width:100%; height:100%;"></div>
+		<div class="repeatbox">
+			<input disabled id="rcampo" class="field" style="width:160px; border:1px solid black;" type="text"></input>
+			<input style="position:relative; top:-10px; width:30px; height:45px; border:1px solid black; border-radius:10px; " type="number" name="quantity" min="1" max="5"></input>
+			<center>
+				<button id="rrun" style="background-color:#00e349;"><i class="fas fa-arrow-right"></i></button>
+				<button id="rjump" style="background-color:blue;"><i class="fas fa-arrow-up"></i></button>
+			</center>
+			<center>
+				<button id="x" style="background-color:red;"><i class="fas fa-times"></i></button>
+				<button id="v" style="background-color:green;"><i class="fas fa-check"></i></button>
+			</center>
+		</div>
+		
+		
+		<script>
+		
+		var bgm = new Audio('Sounds/bgm.mp3');
+		var playing = true;
+		var lpos = 0;
+			$(document).ready(function(){
+				$('#black').hide();
+				$('.repeatbox').hide();
+				$('#start').hide();
+				$('#run').click( function () {
+					$('#campo').val($('#campo').val() + "→");
+				});		
+				$('#jump').click( function () {
+					$('#campo').val($('#campo').val() + "↑");
+				});
+				$('#play').click( function () {
+					$("#play").toggleClass('clap clapanim');
+					new Audio("Sounds/play.mp3").play();		
+				
+					if(playing == false){
+					playing = true;					
+					$('.quad').show();
+					bgm.pause();
+					bgm.currentTime = 0;
+					} else {					
+					playing = false;					
+					setTimeout(function () {
+						$('#start').show();
+						bgm.play();
+						setTimeout(function () {
+							$('#start').hide();
+							for(var i = 0; i < $('#campo').val().length; i++){
+								if($('#campo').val().charAt(i) == '→'){
+									$('#mario').toggleClass('mario runmario');
+									$('#mario').animate({'left' : "+=41px"});
+									lpos++;
+								} else if($('#campo').val().charAt(i) == '↑'){								
+									new Audio("Sounds/jump.wav").play();								
+									$('#mario').animate({'left' : "+=41px",'top' : "-=41px"});
+									$('#mario').animate({'left' : "+=41px",'top' : "+=41px"});								
+									lpos += 2;
+									
+								}
+								if(lpos == 18){
+									$('#mario').promise().done( function() {
+										bgm.pause();
+										new Audio("Sounds/clear.mp3").play();
+									});
+								}
+							}
+						}, 2000);
+					}, 1000);
+					$('.quad').hide();
+					}
+				});				
+			});
+		</script>
+	</body>
+</html>
