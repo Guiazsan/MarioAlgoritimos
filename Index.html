@@ -179,6 +179,7 @@
 		var playing = true;
 		var lpos = 0;
 			$(document).ready(function(){
+				$('#campo').val("");
 				$('#black').hide();
 				$('.repeatbox').hide();
 				$('#start').hide();
@@ -197,6 +198,7 @@
 					$('.quad').show();
 					bgm.pause();
 					bgm.currentTime = 0;
+					$('#campo').val("");	
 					} else {					
 					playing = false;					
 					setTimeout(function () {
